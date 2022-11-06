@@ -1,5 +1,5 @@
 {
-	"cmake_pre":"if(NOT CMAKE_BUILD_TYPE STREQUAL \"Debug\")\n\tset(WARN \"\")\nelseif(MSVC)\n\tset(WARN /W4 /WX)\nelse()\n\tset(WARN -Wall -Wextra -Wpedantic)\nendif()\n",
+	"cmake_pre":"if(CMAKE_BUILD_TYPE STREQUAL \"Debug\")\n\tmessage(STATUS \"enabling warnings\")\n\tif(MSVC)\n\t\tset(WARN /W4 /WX)\n\telse()\n\t\tset(WARN -Wall -Wextra -Wpedantic)\n\tendif()\nelse()\n\tset(WARN \"\")\nendif()\n",
 	"target":{
 		"cmake_post":"target_compile_options(%s PRIVATE ${WARN})\n"
 	}
