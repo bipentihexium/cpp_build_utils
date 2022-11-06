@@ -1,0 +1,6 @@
+{
+	"cmake_pre":"if(NOT CMAKE_BUILD_TYPE STREQUAL \"Debug\")\n\tinclude(CheckIPOSupported)\n\tcheck_ipo_supported(RESULT ipo_supported OUTPUT ipo_error)\nendif()\n",
+	"target":{
+		"cmake_post":"if(NOT CMAKE_BUILD_TYPE STREQUAL \"Debug\")\n\tif(ipo_supported)\n\t\tmessage(STATUS \"IPO (LTO) enabled\")\n\t\tset_property(TARGET %s PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)\n\telse()\n\t\tmessage(STATUS \"IPO (LTO) not supported: <${ipo_error}>\")\n\tendif()\nendif()\n"
+	}
+}

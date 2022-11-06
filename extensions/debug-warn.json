@@ -1,0 +1,6 @@
+{
+	"cmake_pre":"if(NOT CMAKE_BUILD_TYPE STREQUAL \"Debug\")\n\tset(WARN \"\")\nelseif(MSVC)\n\tset(WARN /W4 /WX)\nelse()\n\tset(WARN -Wall -Wextra -Wpedantic)\nendif()\n",
+	"target":{
+		"cmake_post":"target_compile_options(%s PRIVATE ${WARN})\n"
+	}
+}

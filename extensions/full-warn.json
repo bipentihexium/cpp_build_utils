@@ -1,0 +1,6 @@
+{
+	"cmake_pre":"if(MSVC)\n\tset(FULL_WARN /W4 /WX)\nelse()\n\tset(FULL_WARN -Wall -Wextra -Wpedantic)\nendif()\n",
+	"target":{
+		"cmake_post":"target_compile_options(%s PRIVATE ${FULL_WARN})\n"
+	}
+}
