@@ -1,0 +1,12 @@
+add_executable(%{PROJECT_NAME} main.cpp)
+target_compile_features(%{PROJECT_NAME} PUBLIC cxx_std_20)
+target_compile_options(%{PROJECT_NAME} PRIVATE ${WARN})
+if(NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
+	if(ipo_supported)
+		message(STATUS "IPO (LTO) enabled")
+		set_property(TARGET %{PROJECT_NAME} PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
+	else()
+		message(STATUS "IPO (LTO) not supported: <${ipo_error}>")
+	endif()
+endif()
+

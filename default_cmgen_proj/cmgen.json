@@ -1,0 +1,20 @@
+{
+	"project":"%{PROJECT_NAME}",
+	"version":"1.0.0.0",
+	"languages":"CXX",
+	"standard":{ "CXX":"20" },
+	"output":"${CMAKE_SOURCE_DIR}/bin/",
+	"targets":[
+		{
+			"name":"%{PROJECT_NAME}",
+			"type":"executable",
+			"source_dir":"src",
+			"sources":[ "main.cpp" ],
+			"depends":[],
+			"features":["cxx_std_20"]
+		}
+	],
+	"dependencies":[
+	],
+	"global-cmgen-extensions":[ "debug-warn", "release-ipo" ]
+}
