@@ -35,9 +35,9 @@ for a in sys.argv[1:]:
 else:
 	shelp()
 
-if action in ["new", "new_cmg"]:
+if action in ["fetch", "new", "new_cmg"]:
 	aargs = [a for a in sys.argv[1:] if not a.startswith('-')]
-	if aargs.size() < 2:
+	if len(aargs) < 2:
 		print("cproxy " + action + "<name> needs a name argument")
 	a2 = aargs[1]
 
