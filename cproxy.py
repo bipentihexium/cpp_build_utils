@@ -13,9 +13,12 @@ def shelp():
 	print("\tclean - do clean")
 	print("\tcmgen/gen - generate cmake project from cmgen.json and configure it")
 	print("\tconfigure/conf - configure current cmake project")
+	print("\tdoc - run doxygen")
+	print("\tdoc_g - generate doxygen config")
 	print("\tfetch <repo> - fetch a github repo (`owner/name`) using git")
 	print("\thelp - shows this")
 	print("\tinstall - install built project")
+	print("\tinstall_git_cmake - fetch (into current dir!) and install cmake project from github repo #NOT TESTED YET#")
 	print("\tnew <name> - crates new cmake project")
 	print("\tnew_cmg <name> - creates new cmgen project")
 	print("\ttest - test current project; options are forwarded to ctest, so check ctest's help for this; but it runs all tests by default")
@@ -35,7 +38,7 @@ for a in sys.argv[1:]:
 else:
 	shelp()
 
-if action in ["fetch", "new", "new_cmg"]:
+if action in ["fetch", "install_git_cmake", "new", "new_cmg"]:
 	aargs = [a for a in sys.argv[1:] if not a.startswith('-')]
 	if len(aargs) < 2:
 		print("cproxy " + action + "<name> needs a name argument")
@@ -99,12 +102,22 @@ elif action == "cmgen" or action == "gen":
 	configure("Generate CMake project from cmgen.json and configure it")
 elif action == "configure" or action == "conf":
 	configure("Configure current cmake project")
+elif action == "doc":
+	cmd(f"doxygen doxygen.cfg")
+elif action == "doc_g":
+	cmd(f"doxygen -g doxygen.cfg")
 elif action == "fetch":
 	cmd(f"git clone https://github.com/{a2}.git")
 elif action == "help":
 	shelp()
 elif action == "install":
 	cmd("cmake --install build")
+elif action == "install_git_cmake":
+	cmd(f"git clone https://github.com/{a2}.git")
+	os.chdir(a2.split('/')[1])
+	cmd(f"cmake -S . -B build -DCMAKE_BUILD_TYPE=RELEASE {sys.argv[3:]}")
+	cmd(f"cmake --build build")
+	cmd(f"cmake --install build")
 elif action == "new":
 	gen_project(a2, "default_cmake_proj")
 elif action == "new_cmg":
