@@ -2,11 +2,7 @@ import argparse
 import os
 import sys
 
-for a in sys.argv[1:]:
-	if not a.startswith("-"):
-		action = a
-		break
-else:
+def shelp():
 	print("No action specified!")
 	print("help:")
 	print("cproxy - a proxy between cpp_build_utils and CMake")
@@ -14,23 +10,36 @@ else:
 	print("\tcproxy <action> ... [options]")
 	print("Actions:")
 	print("\tbuild - builds current cmake project")
-	print("\tconfigure/conf - configure current cmake project")
+	print("\tclean - do clean")
 	print("\tcmgen/gen - generate cmake project from cmgen.json and configure it")
+	print("\tconfigure/conf - configure current cmake project")
+	print("\tfetch <repo> - fetch a github repo (`owner/name`) using git")
+	print("\thelp - shows this")
 	print("\tinstall - install built project")
 	print("\tnew <name> - crates new cmake project")
 	print("\tnew_cmg <name> - creates new cmgen project")
 	print("\ttest - test current project; options are forwarded to ctest, so check ctest's help for this; but it runs all tests by default")
+	print("\tversion - show version")
 	print("Global options:")
 	print("\t--verbose  -v   show ran commands (doesn't work with cproxy test)")
 	print("Options:")
-	print("\tbuild - run cproxy build -h to see it's help")
+	print("\tbuild")
+	print("\t\t--clean   do clean build")
+	print("\tconfigure/cmgen - run cproxy build -h to see it's help")
 	sys.exit(1)
+
+for a in sys.argv[1:]:
+	if not a.startswith("-"):
+		action = a
+		break
+else:
+	shelp()
 
 if action in ["new", "new_cmg"]:
 	aargs = [a for a in sys.argv[1:] if not a.startswith('-')]
 	if aargs.size() < 2:
 		print("cproxy " + action + "<name> needs a name argument")
-	pname = aargs[1]
+	a2 = aargs[1]
 
 verbose = "--verbose" in sys.argv or any(a.startswith('-') and 'v' in a for a in sys.argv)
 
@@ -82,19 +91,27 @@ def configure(desc):
 	cmd(f"cmake -S . -B build{cmake_args}")
 
 if action == "build":
-	cmd("cmake --build build")
-elif action == "configure" or action == "conf":
-	configure("Configure current cmake project")
+	cmd(f"cmake --build build{' --clean-first' if '--clean' in sys.argv else ''}")
+elif action == "clean":
+	cmd("cmake --build build --target clean")
 elif action == "cmgen" or action == "gen":
 	cmd(sys.executable + " " + os.path.dirname(os.path.realpath(__file__)) + "/cmake_gen.py ./cmgen.json ./")
 	configure("Generate CMake project from cmgen.json and configure it")
+elif action == "configure" or action == "conf":
+	configure("Configure current cmake project")
+elif action == "fetch":
+	cmd(f"git clone https://github.com/{a2}.git")
+elif action == "help":
+	shelp()
 elif action == "install":
 	cmd("cmake --install build")
 elif action == "new":
-	gen_project(pname, "default_cmake_proj")
+	gen_project(a2, "default_cmake_proj")
 elif action == "new_cmg":
-	gen_project(pname, "default_cmgen_proj")
+	gen_project(a2, "default_cmgen_proj")
 elif action == "test":
 	os.chdir("./build")
 	cmd("ctest " + " ".join(sys.argv[2:]))
 	os.chdir("../")
+elif action == "version":
+	print("cproxy.py v1.0.0")
