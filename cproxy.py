@@ -115,7 +115,7 @@ elif action == "install":
 elif action == "install_git_cmake":
 	cmd(f"git clone https://github.com/{a2}.git")
 	os.chdir(a2.split('/')[1])
-	cmd(f"cmake -S . -B build -DCMAKE_BUILD_TYPE=RELEASE {sys.argv[3:]}")
+	cmd(f"cmake -S . -B build -DCMAKE_BUILD_TYPE=Release {' '.join(sys.argv[3:])}")
 	cmd(f"cmake --build build")
 	cmd(f"cmake --install build")
 elif action == "new":
