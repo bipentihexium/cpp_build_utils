@@ -6,6 +6,7 @@ Few utilities to help with making and building C/C++ projects.
 	- [Installation / Usage](#installation--usage)
 	- [cproxy](#cproxy)
 	- [cmake_gen](#cmake_gen)
+	- [TODO](#todo)
 
 ## Installation / Usage
 
@@ -37,3 +38,79 @@ cproxy command | description | effect
 ## cmake_gen
 
 A generator of cmake files from json, to make cmake more approachable to beginners.
+
+Let's consider following example:
+
+```json
+{
+	"project":"epic_project",
+	"version":"0.69.420.0",
+	"languages":"CXX",
+	"standard":{
+		"CXX":"20"
+	},
+	"output":"${CMAKE_SOURCE_DIR}/bin/",
+	"targets":[
+		{
+			"name":"epic",
+			"type":"executable",
+			"source_dir":"src",
+			"sources":[
+				"main.cpp"
+			],
+			"depends":["httplib"],
+			"features":["cxx_std_20"]
+		}
+	],
+	"dependencies":[
+		{
+			"name":"httplib",
+			"mode":"github",
+			"repo":"yhirose/cpp-httplib",
+			"tag":"v0.11.2"
+		}
+	],
+	"global-cmgen-extensions":[ "debug-warn", "release-ipo" ],
+	"tests":{
+		"dir":"tests",
+		"tests":[
+			{
+				"type":"executable",
+				"name":"test-unit",
+				"sources":[
+					"test_unit1.cpp"
+				],
+				"include_dir":"${CMAKE_SOURCE_DIR}/src"
+			}
+		]
+	}
+}
+```
+
+The `project` field is the name of the project - it can't have whitespace in it unless it's surrounded by `"`s - which means `\"` in the json.
+`version` field is version of the project - it can have up to 4 version levels - major, minor, patch and tweak.
+`languages` is a space-separated list of languages used in the project in cmake's format - C CXX ....
+`standard` is a "dictionary" with the number (in string!) of standard for each language (it's optional though).
+`output` is the output directory - the path is relative to `build` subdirectory, which has also all cmake files - so I prefer something `bin` subdirectory in the project roor - the project root is stored in `${CMAKE_SOURCE_DIR}` (use it like this: `${CMAKE_SOURCE_DIR}/bin/`).
+`targets` is a list of targets in the project - every target is "js object" with those fields:
+
+field | effect | is optional (default)
+--- | --- | ---
+`name` | name of the target and the output file | no
+`type` | what the target is - `executable`, `shared`, `module` or `static` | no
+`source_dir` | directory with target's sources relative to project root (must be unique) | no
+`sources` | list with source files for the | no
+`depends` | list of targets the library depends on | yes
+`includes` | list of directories from which files should be included | yes
+`include_dir` | include directory - has the same effect as adding it to `includes` | yes
+`links` | libraries against whose the target should be linked | yes
+`link_dirs` | directories containing files for linking | yes
+`features` | list of features to be passed into `target_compile_features` | yes
+`cmake_pre` | cmake code added at the beginning of the cmakelists for the target | yes
+`cmake_post` | cmake code added at the end of the cmakelists for the target | yes
+`cmgen-extensions` | list of cmgen extensions used by this target | yes
+
+## TODO
+
+ - finish the documentation
+ - add support for `configure_file` into cmgen

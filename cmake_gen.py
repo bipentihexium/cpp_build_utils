@@ -11,7 +11,8 @@ def gen_trg(p:dict, trg:dict, ext_trgs:dict):
 		if 'cmake_pre' in extd: trg['cmake_pre'] = get_or(trg, 'cmake_pre', "") + (extd['cmake_pre'] % trg['name'])
 		if 'cmake_post' in extd: trg['cmake_post'] = get_or(trg, 'cmake_post', "") + (extd['cmake_post'] % trg['name'])
 	out_src = f"{get_or(trg, 'cmake_pre', '')}" +\
-		f"add_{trg['type']}({trg['name']} {' '.join(trg['sources'])})\n"
+		f"add_{'executable' if trg['type'] == 'executable' else 'library'}({trg['name']}" +\
+		f"{trg['type'].upper() if trg['type'] != 'executable' else ''} {' '.join(trg['sources'])})\n"
 	includes = [trg['include_dir']] if 'include_dir' in trg else []
 	link_dirs = []
 	links = []
