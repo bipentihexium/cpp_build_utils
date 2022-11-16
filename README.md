@@ -88,10 +88,15 @@ Let's consider following example:
 ```
 
 The `project` field is the name of the project - it can't have whitespace in it unless it's surrounded by `"`s - which means `\"` in the json.
+
 `version` field is version of the project - it can have up to 4 version levels - major, minor, patch and tweak.
+
 `languages` is a space-separated list of languages used in the project in cmake's format - C CXX ....
+
 `standard` is a "dictionary" with the number (in string!) of standard for each language (it's optional though).
-`output` is the output directory - the path is relative to `build` subdirectory, which has also all cmake files - so I prefer something `bin` subdirectory in the project roor - the project root is stored in `${CMAKE_SOURCE_DIR}` (use it like this: `${CMAKE_SOURCE_DIR}/bin/`).
+
+`output` is the output directory - the path is relative to `build` subdirectory, which has also all cmake files - so I prefer something `bin` subdirectory in the project root - the project root is stored in `${CMAKE_SOURCE_DIR}` (use it like this: `${CMAKE_SOURCE_DIR}/bin/`).
+
 `targets` is a list of targets in the project - every target is "js object" with those fields:
 
 field | effect | is optional (default)
